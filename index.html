@@ -1,0 +1,542 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Big Five · Personality Profile</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #192b3a;
+      --muted: #667786;
+      --paper: #f5f7fa;
+      --card: #ffffff;
+      --line: #e2e8ee;
+      --navy: #183b56;
+      --blue: #356d8f;
+      --mint: #bce6d5;
+      --mint-dark: #276a58;
+      --gold: #f2d59a;
+      --danger: #a53c3c;
+      --shadow: 0 18px 55px rgba(25, 43, 58, .08);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(ellipse at 6% 0%, rgba(188,230,213,.35), transparent 28rem),
+        radial-gradient(ellipse at 100% 8%, rgba(242,213,154,.25), transparent 30rem),
+        var(--paper);
+      min-height: 100vh;
+    }
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+    .shell { width: min(1080px, calc(100% - 36px)); margin: 0 auto; padding: 28px 0 52px; }
+    .topline { display:flex; align-items:center; justify-content:space-between; gap:18px; margin-bottom:32px; }
+    .brand { display:flex; align-items:center; gap:12px; font-size:13px; font-weight:800; letter-spacing:.13em; text-transform:uppercase; }
+    .brand-mark { display:grid; place-items:center; width:38px; height:38px; border-radius:13px; background:var(--navy); color:white; font-size:18px; letter-spacing:0; }
+    .privacy { color:var(--muted); font-size:12px; }
+    .hero { max-width:760px; margin:0 auto 28px; text-align:center; }
+    .eyebrow { color:var(--mint-dark); font-weight:800; letter-spacing:.15em; text-transform:uppercase; font-size:11px; margin:0 0 12px; }
+    h1 { font-size:clamp(34px, 6vw, 58px); line-height:1.02; letter-spacing:-.055em; margin:0; font-weight:800; }
+    .hero p { margin:16px auto 0; max-width:600px; color:var(--muted); line-height:1.7; font-size:15px; }
+    .panel { background:var(--card); border:1px solid rgba(226,232,238,.9); border-radius:25px; box-shadow:var(--shadow); }
+    .setup { max-width:720px; margin:30px auto 0; padding:clamp(22px, 5vw, 38px); }
+    .section-kicker { color:var(--muted); font-size:11px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; margin:0 0 9px; }
+    h2 { font-size:23px; letter-spacing:-.03em; margin:0 0 10px; }
+    .copy { color:var(--muted); font-size:14px; line-height:1.7; margin:0; }
+    .upload-zone { margin-top:24px; border:1.5px dashed #b8c8d4; border-radius:18px; padding:25px 20px; text-align:center; background:#f9fbfc; }
+    .upload-icon { margin:0 auto 12px; width:46px; height:46px; display:grid; place-items:center; border-radius:15px; background:#e5f4ed; color:var(--mint-dark); font-size:22px; }
+    .file-label { display:inline-flex; align-items:center; justify-content:center; margin-top:16px; background:var(--navy); color:white; border:0; border-radius:12px; min-height:46px; padding:0 19px; font-size:13px; font-weight:750; transition:transform .15s, background .15s; }
+    .file-label:hover, .primary:hover { background:#244e6b; transform:translateY(-1px); }
+    .file-label input { position:absolute; width:1px; height:1px; opacity:0; overflow:hidden; }
+    .file-status { margin-top:12px; color:var(--muted); font-size:12px; overflow-wrap:anywhere; }
+    .hint { margin-top:18px; padding:13px 15px; background:#f2f7f5; border-radius:12px; color:#42685d; font-size:12px; line-height:1.6; }
+    .error { color:var(--danger); font-size:13px; margin-top:13px; line-height:1.5; }
+    .hidden { display:none !important; }
+    .quiz { max-width:800px; margin:0 auto; overflow:hidden; }
+    .quiz-head { padding:24px 28px 20px; border-bottom:1px solid var(--line); }
+    .quiz-head-row { display:flex; justify-content:space-between; align-items:center; gap:20px; }
+    .step-label { color:var(--muted); font-size:12px; font-weight:750; letter-spacing:.1em; text-transform:uppercase; }
+    .answered-label { color:var(--muted); font-size:12px; white-space:nowrap; }
+    .track { width:100%; height:6px; border-radius:99px; background:#edf1f4; margin-top:17px; overflow:hidden; }
+    .track-fill { height:100%; width:0%; background:linear-gradient(90deg, #7cc8ad, #356d8f); border-radius:99px; transition:width .2s ease; }
+    .question-content { padding:clamp(24px, 5vw, 42px); }
+    .q-number { font-size:12px; color:var(--mint-dark); font-weight:850; text-transform:uppercase; letter-spacing:.14em; margin-bottom:15px; }
+    .question-text { font-size:clamp(24px, 4vw, 33px); font-weight:750; line-height:1.3; letter-spacing:-.035em; min-height:90px; overflow-wrap:anywhere; }
+    .scale-intro { color:var(--muted); font-size:13px; margin:25px 0 12px; }
+    .answers { display:grid; grid-template-columns:repeat(6, minmax(0, 1fr)); gap:10px; }
+    .answer { position:relative; border:1px solid var(--line); border-radius:15px; padding:15px 5px 13px; background:white; color:var(--ink); min-height:74px; transition:border-color .15s, background .15s, transform .15s; }
+    .answer:hover { border-color:#91b7aa; transform:translateY(-2px); }
+    .answer[aria-pressed="true"] { border-color:var(--mint-dark); background:#eaf7f1; box-shadow:inset 0 0 0 1px var(--mint-dark); }
+    .answer-number { display:block; font-size:21px; font-weight:850; }
+    .answer-word { display:block; font-size:10px; color:var(--muted); margin-top:5px; line-height:1.25; }
+    .answer[aria-pressed="true"] .answer-word { color:#276a58; }
+    .scale-key { display:flex; justify-content:space-between; gap:12px; color:var(--muted); font-size:11px; margin-top:11px; }
+    .quiz-error { min-height:20px; color:var(--danger); font-size:12px; margin-top:12px; }
+    .quiz-footer { display:flex; justify-content:space-between; align-items:center; gap:12px; padding:18px 28px 24px; border-top:1px solid var(--line); }
+    .text-button { border:0; background:transparent; color:var(--muted); padding:12px 5px; font-weight:700; font-size:13px; }
+    .text-button:disabled { opacity:.35; cursor:not-allowed; }
+    .primary { border:0; border-radius:12px; padding:14px 20px; background:var(--navy); color:white; font-size:13px; font-weight:800; transition:transform .15s, background .15s; }
+    .primary:disabled { opacity:.4; cursor:not-allowed; transform:none; }
+    .results { max-width:980px; margin:0 auto; }
+    .results-top { display:flex; align-items:flex-end; justify-content:space-between; gap:22px; margin:0 0 22px; }
+    .results-top h2 { font-size:clamp(27px,4vw,39px); margin:0; }
+    .results-top p { margin:9px 0 0; color:var(--muted); font-size:14px; line-height:1.6; }
+    .actions { display:flex; gap:8px; flex-wrap:wrap; }
+    .secondary { border:1px solid var(--line); border-radius:11px; background:white; color:var(--ink); padding:11px 14px; font-weight:750; font-size:12px; white-space:nowrap; }
+    .secondary:hover { background:#f8fafb; }
+    .trait-grid { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:15px; }
+    .trait-card { padding:23px; }
+    .trait-card:first-child { grid-column:1 / -1; }
+    .trait-head { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; }
+    .trait-name { font-size:18px; font-weight:800; letter-spacing:-.025em; }
+    .trait-score { font-weight:850; color:var(--navy); font-size:21px; white-space:nowrap; }
+    .trait-score small { color:var(--muted); font-weight:650; font-size:11px; }
+    .bar { margin:15px 0 17px; background:#edf1f4; height:8px; border-radius:99px; overflow:hidden; }
+    .bar-fill { height:100%; border-radius:99px; background:linear-gradient(90deg, #8bd0b5, #356d8f); }
+    .facets { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:10px; }
+    .facet { background:#f7f9fb; border-radius:13px; padding:12px; }
+    .facet-line { display:flex; justify-content:space-between; align-items:baseline; gap:8px; font-size:12px; }
+    .facet-name { color:#526574; line-height:1.4; }
+    .facet-score { font-weight:800; color:var(--ink); white-space:nowrap; }
+    .mini-bar { height:4px; background:#e4eaee; border-radius:99px; overflow:hidden; margin-top:9px; }
+    .mini-bar div { height:100%; background:#80bca8; border-radius:99px; }
+    .results-note { margin-top:16px; color:var(--muted); font-size:12px; line-height:1.7; }
+    footer { text-align:center; color:#8a98a4; font-size:11px; padding-top:28px; }
+    @media (max-width:640px) {
+      .shell { width:min(100% - 22px, 1080px); padding-top:17px; }
+      .topline { margin-bottom:25px; }
+      .privacy { display:none; }
+      .answers { gap:5px; }
+      .answer { min-height:66px; border-radius:11px; }
+      .answer-number { font-size:18px; }
+      .answer-word { font-size:9px; }
+      .quiz-head { padding:20px 18px 17px; }
+      .question-content { padding:25px 18px; }
+      .quiz-footer { padding:15px 18px 20px; }
+      .scale-key { font-size:10px; }
+      .results-top { display:block; }
+      .actions { margin-top:16px; }
+      .trait-grid { grid-template-columns:1fr; }
+      .trait-card:first-child { grid-column:auto; }
+      .trait-card { padding:19px; }
+      .facets { gap:8px; }
+    }
+    @media print {
+      body { background:white; }
+      .topline, .hero, .actions, footer { display:none !important; }
+      .shell { width:100%; padding:0; }
+      .panel { box-shadow:none; break-inside:avoid; }
+      .trait-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="topline">
+      <div class="brand"><span class="brand-mark">B5</span><span>Personality profile</span></div>
+      <div class="privacy">Private by design · Your answers stay in this browser</div>
+    </header>
+
+    <section class="hero" id="hero">
+      <p class="eyebrow">A little self-reflection</p>
+      <h1>Get to know<br>your patterns.</h1>
+      <p>Answer 50 statements at your own pace. When you finish, you’ll get a clear snapshot of the five broad traits and their ten facets.</p>
+    </section>
+
+    <section class="panel setup" id="setup">
+      <p class="section-kicker">Step 1 · Questionnaire</p>
+      <h2>Ready to begin?</h2>
+      <p class="copy">Answer 50 statements at your own pace. Choose a response from 0 to 5 for each statement. Your five broad traits and ten facets will be calculated automatically when you finish.</p>
+      <div class="upload-zone">
+        <div class="upload-icon" aria-hidden="true">B5</div>
+        <strong>50 statements · one at a time</strong>
+        <p class="copy" style="margin-top:7px;font-size:12px">All questions are built into this page. No extra files are needed.</p>
+        <button class="primary" id="startButton" type="button" style="margin-top:16px">Begin questionnaire →</button>
+      </div>
+      <div class="hint"><strong>Response scale:</strong> 0 means “Very inaccurate”; 5 means “Very accurate.” Answer based on how well each statement describes you. After selecting a number, press Enter to move to the next question.</div>
+    </section>
+
+    <section class="panel quiz hidden" id="quiz" aria-live="polite">
+      <div class="quiz-head">
+        <div class="quiz-head-row">
+          <div class="step-label" id="stepLabel">Question 1 of 50</div>
+          <div class="answered-label" id="answeredLabel">0 of 50 answered</div>
+        </div>
+        <div class="track"><div class="track-fill" id="progressFill"></div></div>
+      </div>
+      <div class="question-content">
+        <div class="q-number" id="questionNumber">Question 01</div>
+        <div class="question-text" id="questionText">Your question will appear here.</div>
+        <p class="scale-intro">How accurately does this describe you?</p>
+        <div class="answers" id="answers" role="group" aria-label="Choose a response"></div>
+        <div class="scale-key"><span>0 · Very inaccurate</span><span>5 · Very accurate</span></div>
+        <div class="quiz-error" id="quizError" role="alert"></div>
+      </div>
+      <div class="quiz-footer">
+        <button class="text-button" id="backButton" type="button">← Back</button>
+        <button class="primary" id="nextButton" type="button">Continue →</button>
+      </div>
+    </section>
+
+    <section class="results hidden" id="results" aria-live="polite">
+      <div class="results-top">
+        <div>
+          <p class="eyebrow">Your profile</p>
+          <h2>Your results, at a glance.</h2>
+          <p>Scores show your answers on a 0–10 scale. They’re a self-reflection snapshot, not a diagnosis.</p>
+        </div>
+        <div class="actions">
+          <button class="secondary" id="downloadButton" type="button">↓ Export CSV</button>
+          <button class="secondary" id="printButton" type="button">Print results</button>
+          <button class="secondary" id="restartButton" type="button">Start over</button>
+        </div>
+      </div>
+      <div class="trait-grid" id="traitGrid"></div>
+      <p class="results-note">Interpret each score in context. This page calculates scores from the question key built into it; it does not compare you with a population or provide a clinical assessment.</p>
+    </section>
+
+    <footer>Big Five personality profile · Runs locally in your browser</footer>
+  </main>
+
+  <script>
+    // EDIT QUESTIONS HERE. Keep all 50 questions in the same order as the scoring key.
+    // The leading number is optional for display; the page removes it automatically.
+    const EMBEDDED_QUESTIONS = [
+      "1. Get deeply immersed in music",
+      "2. Feel threatened easily",
+      "3. Wait for others to lead the way",
+      "4. Carry out my plans",
+      "5. Am hard to get to know",
+      "6. Believe in the importance of art",
+      "7. Keep things tidy",
+      "8. Like to solve complex problems",
+      "9. Am indifferent to the feelings of others",
+      "10. Get upset easily",
+      "11. Don’t daydream often",
+      "12. Worry about things",
+      "13. See myself as a good leader",
+      "14. Change my mood a lot",
+      "15. Have difficulty understanding abstract ideas",
+      "16. Inquire about others' well-being",
+      "17. Dislike routine",
+      "18. Make friends easily",
+      "19. Take charge",
+      "20. Rarely get irritated",
+      "21. See beauty in things that others might not notice",
+      "22. Follow a schedule",
+      "23. Hold back my opinions",
+      "24. Feel comfortable with myself",
+      "25. Find it difficult to get down to work",
+      "26. Like order",
+      "27. Get angry easily",
+      "28. Believe that I am better than others",
+      "29. Finish what I start",
+      "30. Can handle a lot of information",
+      "31. Am easily distracted",
+      "32. Sympathize with others' feelings",
+      "33. Laugh a lot",
+      "34. Have a strong personality",
+      "35. Do not like poetry",
+      "36. Warm up quickly to others",
+      "37. Seek conflict",
+      "38. Keep my emotions under control",
+      "39. Feel others' emotions",
+      "40. Leave my belongings around",
+      "41. Am filled with doubts about things",
+      "42. Avoid philosophical discussions",
+      "43. Respect authority",
+      "44. Get things done quickly",
+      "45. Am not interested in other people's problems",
+      "46. Rarely feel depressed",
+      "47. Keep others at a distance",
+      "48. Hate to seem pushy",
+      "49. Take advantage of others",
+      "50. Am quick to understand things"
+    ];
+
+    // EDIT THE SCORING KEY HERE if your scoring manual changes.
+    // Normal questions use the selected answer; reverse questions use 5 - answer.
+    const scoringKey = {
+      ope:   { normal: [1, 6, 21],   reverse: [11, 35] },
+      intel: { normal: [8, 30, 50],  reverse: [15, 42] },
+      ind:   { normal: [4, 29, 44],  reverse: [25, 31] },
+      org:   { normal: [7, 22, 26],  reverse: [17, 40] },
+      enth:  { normal: [18, 33, 36], reverse: [5, 47] },
+      ass:   { normal: [13, 19, 34], reverse: [3, 23] },
+      comp:  { normal: [16, 32, 39], reverse: [9, 45] },
+      pol:   { normal: [43, 48],     reverse: [28, 49, 37] },
+      wth:   { normal: [2, 12, 41],  reverse: [24, 46] },
+      vol:   { normal: [10, 27],     reverse: [14, 20, 38] }
+    };
+
+    // EDIT THESE LABELS to change the names shown on the results page.
+    const traitDefinitions = [
+      { key: "op", name: "Openness", facets: [{ key: "ope", name: "Openness to Experience" }, { key: "intel", name: "Intellect" }] },
+      { key: "con", name: "Conscientiousness", facets: [{ key: "ind", name: "Industriousness" }, { key: "org", name: "Organisation" }] },
+      { key: "ex", name: "Extraversion", facets: [{ key: "enth", name: "Enthusiasm" }, { key: "ass", name: "Assertiveness" }] },
+      { key: "agr", name: "Agreeableness", facets: [{ key: "comp", name: "Compassion" }, { key: "pol", name: "Politeness" }] },
+      { key: "neu", name: "Neuroticism", facets: [{ key: "wth", name: "Withdrawal" }, { key: "vol", name: "Volatility" }] }
+    ];
+
+    const setup = document.getElementById("setup");
+    const hero = document.getElementById("hero");
+    const quiz = document.getElementById("quiz");
+    const results = document.getElementById("results");
+    const startButton = document.getElementById("startButton");
+    const stepLabel = document.getElementById("stepLabel");
+    const answeredLabel = document.getElementById("answeredLabel");
+    const progressFill = document.getElementById("progressFill");
+    const questionNumber = document.getElementById("questionNumber");
+    const questionText = document.getElementById("questionText");
+    const answersContainer = document.getElementById("answers");
+    const quizError = document.getElementById("quizError");
+    const backButton = document.getElementById("backButton");
+    const nextButton = document.getElementById("nextButton");
+    const traitGrid = document.getElementById("traitGrid");
+
+    let questions = [];
+    let responses = Array(50).fill(null);
+    let currentQuestion = 0;
+    let computedResults = null;
+
+    function startQuiz(parsedQuestions) {
+      questions = parsedQuestions;
+      responses = Array(50).fill(null);
+      currentQuestion = 0;
+      computedResults = null;
+      setup.classList.add("hidden");
+      hero.classList.add("hidden");
+      results.classList.add("hidden");
+      quiz.classList.remove("hidden");
+      renderQuestion();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    startButton.addEventListener("click", () => startQuiz(EMBEDDED_QUESTIONS));
+
+    function updateProgress() {
+      const answered = responses.filter(value => value !== null).length;
+      answeredLabel.textContent = `${answered} of 50 answered`;
+      progressFill.style.width = `${(answered / 50) * 100}%`;
+    }
+
+    function renderQuestion() {
+      const number = currentQuestion + 1;
+      stepLabel.textContent = `Question ${number} of 50`;
+      questionNumber.textContent = `Question ${String(number).padStart(2, "0")}`;
+      // Remove the typed question number to avoid showing it twice in the interface.
+      questionText.textContent = questions[currentQuestion].replace(/^\s*\d+\.\s*/, "");
+      quizError.textContent = "";
+      answersContainer.replaceChildren();
+
+      for (let value = 0; value <= 5; value++) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "answer";
+        button.dataset.value = String(value);
+        button.setAttribute("aria-pressed", String(responses[currentQuestion] === value));
+        button.setAttribute("aria-label", `Answer ${value}`);
+        const numberSpan = document.createElement("span");
+        numberSpan.className = "answer-number";
+        numberSpan.textContent = value;
+        button.appendChild(numberSpan);
+        button.addEventListener("click", () => {
+          responses[currentQuestion] = value;
+          // Update selection in-place so keyboard focus remains on the answer button.
+          for (const answerButton of answersContainer.querySelectorAll(".answer")) {
+            answerButton.setAttribute("aria-pressed", String(Number(answerButton.dataset.value) === value));
+          }
+          quizError.textContent = "";
+          updateProgress();
+        });
+        answersContainer.appendChild(button);
+      }
+
+      backButton.disabled = currentQuestion === 0;
+      nextButton.textContent = currentQuestion === 49 ? "See my results →" : "Continue →";
+      updateProgress();
+    }
+
+    backButton.addEventListener("click", () => {
+      if (currentQuestion > 0) {
+        currentQuestion--;
+        renderQuestion();
+      }
+    });
+
+    function advanceQuestion() {
+      if (responses[currentQuestion] === null) {
+        quizError.textContent = "Choose a response before continuing.";
+        return;
+      }
+      if (currentQuestion < 49) {
+        currentQuestion++;
+        renderQuestion();
+      } else {
+        if (responses.some(value => value === null)) {
+          currentQuestion = responses.findIndex(value => value === null);
+          renderQuestion();
+          quizError.textContent = "A question is still unanswered. Please complete it to see your results.";
+          return;
+        }
+        calculateResults();
+        showResults();
+      }
+    }
+
+    nextButton.addEventListener("click", advanceQuestion);
+
+    // Enter advances after an answer has been selected. When focus is on an
+    // unselected answer, Enter is left alone so the button can select that answer.
+    document.addEventListener("keydown", event => {
+      if (event.key !== "Enter" || quiz.classList.contains("hidden")) return;
+      const target = event.target;
+      if (target instanceof HTMLElement && target.closest("#nextButton, #backButton")) return;
+      if (target instanceof HTMLElement && target.closest(".answer")) {
+        const answerButton = target.closest(".answer");
+        if (answerButton.getAttribute("aria-pressed") === "true" && responses[currentQuestion] !== null) {
+          event.preventDefault();
+          advanceQuestion();
+        }
+        return;
+      }
+      if (responses[currentQuestion] !== null) {
+        event.preventDefault();
+        advanceQuestion();
+      }
+    });
+
+    function average(values) {
+      return values.length ? values.reduce((total, value) => total + value, 0) / values.length : 0;
+    }
+
+    // Round UP (not to nearest) to two decimal places, matching the Python version.
+    // Tiny epsilon prevents floating-point noise from turning 3.33 into 3.34.
+    function ceilTwoDecimals(value) {
+      return Math.ceil((value - 1e-10) * 100) / 100;
+    }
+
+    function calculateResults() {
+      const facetScores = {};
+      for (const key of Object.keys(scoringKey)) facetScores[key] = [];
+
+      for (let question = 1; question <= 50; question++) {
+        const answer = responses[question - 1];
+        for (const [facet, key] of Object.entries(scoringKey)) {
+          if (key.normal.includes(question)) facetScores[facet].push(answer);
+          else if (key.reverse.includes(question)) facetScores[facet].push(5 - answer);
+        }
+      }
+
+      const traitScores = {};
+      for (const trait of traitDefinitions) {
+        const combined = trait.facets.flatMap(facet => facetScores[facet.key]);
+        traitScores[trait.key] = average(combined);
+      }
+      computedResults = { facetScores, traitScores };
+    }
+
+    function makeBar(score, small = false) {
+      const wrapper = document.createElement("div");
+      wrapper.className = small ? "mini-bar" : "bar";
+      const fill = document.createElement("div");
+      fill.className = small ? "" : "bar-fill";
+      fill.style.width = `${Math.max(0, Math.min(100, score * 10))}%`;
+      wrapper.appendChild(fill);
+      return wrapper;
+    }
+
+    function showResults() {
+      quiz.classList.add("hidden");
+      hero.classList.add("hidden");
+      setup.classList.add("hidden");
+      results.classList.remove("hidden");
+      traitGrid.replaceChildren();
+
+      for (const trait of traitDefinitions) {
+        const score = ceilTwoDecimals(computedResults.traitScores[trait.key] * 2);
+        const card = document.createElement("article");
+        card.className = "panel trait-card";
+
+        const head = document.createElement("div");
+        head.className = "trait-head";
+        const name = document.createElement("div");
+        name.className = "trait-name";
+        name.textContent = trait.name;
+        const scoreEl = document.createElement("div");
+        scoreEl.className = "trait-score";
+        scoreEl.append(`${score.toFixed(2)} `);
+        const outOf = document.createElement("small");
+        outOf.textContent = "/ 10";
+        scoreEl.appendChild(outOf);
+        head.append(name, scoreEl);
+        card.appendChild(head);
+        card.appendChild(makeBar(score));
+
+        const facets = document.createElement("div");
+        facets.className = "facets";
+        for (const facet of trait.facets) {
+          const facetAvg = average(computedResults.facetScores[facet.key]);
+          const facetScore = ceilTwoDecimals(facetAvg * 2);
+          const facetBox = document.createElement("div");
+          facetBox.className = "facet";
+          const line = document.createElement("div");
+          line.className = "facet-line";
+          const facetName = document.createElement("span");
+          facetName.className = "facet-name";
+          facetName.textContent = facet.name;
+          const facetValue = document.createElement("span");
+          facetValue.className = "facet-score";
+          facetValue.textContent = `${facetScore.toFixed(2)}/10`;
+          line.append(facetName, facetValue);
+          facetBox.append(line, makeBar(facetScore, true));
+          facets.appendChild(facetBox);
+        }
+        card.appendChild(facets);
+        traitGrid.appendChild(card);
+      }
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    document.getElementById("printButton").addEventListener("click", () => window.print());
+
+    document.getElementById("downloadButton").addEventListener("click", () => {
+      if (!computedResults) return;
+      const rows = [["Trait", "Average (0-5)", "Score (0-10)"]];
+      for (const trait of traitDefinitions) {
+        const avg = computedResults.traitScores[trait.key];
+        rows.push([trait.name, ceilTwoDecimals(avg).toFixed(2), ceilTwoDecimals(avg * 2).toFixed(2)]);
+        for (const facet of trait.facets) {
+          const facetAvg = average(computedResults.facetScores[facet.key]);
+          rows.push([`  ${facet.name}`, ceilTwoDecimals(facetAvg).toFixed(2), ceilTwoDecimals(facetAvg * 2).toFixed(2)]);
+        }
+      }
+      const csv = rows.map(row => row.map(cell => `"${String(cell).replaceAll('"', '""')}"`).join(",")).join("\r\n");
+      const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "big5-results.csv";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    });
+
+    document.getElementById("restartButton").addEventListener("click", () => {
+      responses = Array(50).fill(null);
+      currentQuestion = 0;
+      computedResults = null;
+      results.classList.add("hidden");
+      quiz.classList.add("hidden");
+      setup.classList.remove("hidden");
+      hero.classList.remove("hidden");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  </script>
+</body>
+</html>
