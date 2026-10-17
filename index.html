@@ -67,7 +67,7 @@
     .q-number { font-size:12px; color:var(--mint-dark); font-weight:850; text-transform:uppercase; letter-spacing:.14em; margin-bottom:15px; }
     .question-text { font-size:clamp(24px, 4vw, 33px); font-weight:750; line-height:1.3; letter-spacing:-.035em; min-height:90px; overflow-wrap:anywhere; }
     .scale-intro { color:var(--muted); font-size:13px; margin:25px 0 12px; }
-    .answers { display:grid; grid-template-columns:repeat(6, minmax(0, 1fr)); gap:10px; }
+    .answers { display:grid; grid-template-columns:repeat(5, minmax(0, 1fr)); gap:10px; }
     .answer { position:relative; border:1px solid var(--line); border-radius:15px; padding:15px 5px 13px; background:white; color:var(--ink); min-height:74px; transition:border-color .15s, background .15s, transform .15s; }
     .answer:hover { border-color:#91b7aa; transform:translateY(-2px); }
     .answer[aria-pressed="true"] { border-color:var(--mint-dark); background:#eaf7f1; box-shadow:inset 0 0 0 1px var(--mint-dark); }
@@ -138,7 +138,7 @@
   <main class="shell">
     <header class="topline">
       <div class="brand"><span class="brand-mark">B5</span><span>Personality profile</span></div>
-      <div class="privacy">Private by design · Your answers stay in this browser</div>
+      <div class="privacy"></div>
     </header>
 
     <section class="hero" id="hero">
@@ -148,16 +148,16 @@
     </section>
 
     <section class="panel setup" id="setup">
-      <p class="section-kicker">Step 1 · Questionnaire</p>
+      <p class="section-kicker">Questionnaire</p>
       <h2>Ready to begin?</h2>
-      <p class="copy">Answer 50 statements at your own pace. Choose a response from 0 to 5 for each statement. Your five broad traits and ten facets will be calculated automatically when you finish.</p>
+      <p class="copy">Answer 50 statements at your own pace. Choose a response from 1 to 5 for each statement. Your five broad traits and ten facets will be calculated automatically when you finish.</p>
       <div class="upload-zone">
         <div class="upload-icon" aria-hidden="true">B5</div>
         <strong>50 statements · one at a time</strong>
         <p class="copy" style="margin-top:7px;font-size:12px">All questions are built into this page. No extra files are needed.</p>
         <button class="primary" id="startButton" type="button" style="margin-top:16px">Begin questionnaire →</button>
       </div>
-      <div class="hint"><strong>Response scale:</strong> 0 means “Very inaccurate”; 5 means “Very accurate.” Answer based on how well each statement describes you. After selecting a number, press Enter to move to the next question.</div>
+      <div class="hint"><strong>Response scale:</strong> 1 means “Very inaccurate”; 5 means “Very accurate.” Answer based on how well each statement describes you. After selecting a number, press Enter to move to the next question.</div>
     </section>
 
     <section class="panel quiz hidden" id="quiz" aria-live="polite">
@@ -173,7 +173,7 @@
         <div class="question-text" id="questionText">Your question will appear here.</div>
         <p class="scale-intro">How accurately does this describe you?</p>
         <div class="answers" id="answers" role="group" aria-label="Choose a response"></div>
-        <div class="scale-key"><span>0 · Very inaccurate</span><span>5 · Very accurate</span></div>
+        <div class="scale-key"><span>1 · Very inaccurate</span><span>5 · Very accurate</span></div>
         <div class="quiz-error" id="quizError" role="alert"></div>
       </div>
       <div class="quiz-footer">
@@ -187,7 +187,7 @@
         <div>
           <p class="eyebrow">Your profile</p>
           <h2>Your results, at a glance.</h2>
-          <p>Scores show your answers on a 0–10 scale. They’re a self-reflection snapshot, not a diagnosis.</p>
+          <p>Each score averages the relevant answers (after reverse-scoring where needed) and maps that 1–5 average onto a 1–10 scale. It’s a self-reflection snapshot, not a diagnosis.</p>
         </div>
         <div class="actions">
           <button class="secondary" id="downloadButton" type="button">↓ Export CSV</button>
@@ -259,7 +259,7 @@
     ];
 
     // EDIT THE SCORING KEY HERE if your scoring manual changes.
-    // Normal questions use the selected answer; reverse questions use 5 - answer.
+    // Normal questions use the selected answer; reverse questions use 6 - answer on the 1–5 scale.
     const scoringKey = {
       ope:   { normal: [1, 6, 21],   reverse: [11, 35] },
       intel: { normal: [8, 30, 50],  reverse: [15, 42] },
@@ -275,11 +275,11 @@
 
     // EDIT THESE LABELS to change the names shown on the results page.
     const traitDefinitions = [
-      { key: "op", name: "Openness", facets: [{ key: "ope", name: "Openness to Experience" }, { key: "intel", name: "Intellect" }] },
-      { key: "con", name: "Conscientiousness", facets: [{ key: "ind", name: "Industriousness" }, { key: "org", name: "Organisation" }] },
-      { key: "ex", name: "Extraversion", facets: [{ key: "enth", name: "Enthusiasm" }, { key: "ass", name: "Assertiveness" }] },
-      { key: "agr", name: "Agreeableness", facets: [{ key: "comp", name: "Compassion" }, { key: "pol", name: "Politeness" }] },
-      { key: "neu", name: "Neuroticism", facets: [{ key: "wth", name: "Withdrawal" }, { key: "vol", name: "Volatility" }] }
+      { key: "op", name: "Openness", color: "#3578B8", lightColor: "#91C7F0", darkColor: "#1C548A", facets: [{ key: "ope", name: "Openness to Experience" }, { key: "intel", name: "Intellect" }] },
+      { key: "con", name: "Conscientiousness", color: "#7773C6", lightColor: "#B7B4ED", darkColor: "#4A469C", facets: [{ key: "ind", name: "Industriousness" }, { key: "org", name: "Organisation" }] },
+      { key: "ex", name: "Extraversion", color: "#32986A", lightColor: "#9EE3BE", darkColor: "#166640", facets: [{ key: "enth", name: "Enthusiasm" }, { key: "ass", name: "Assertiveness" }] },
+      { key: "agr", name: "Agreeableness", color: "#D6A521", lightColor: "#F7DE88", darkColor: "#A87500", facets: [{ key: "comp", name: "Compassion" }, { key: "pol", name: "Politeness" }] },
+      { key: "neu", name: "Neuroticism", color: "#D64B4B", lightColor: "#F3A2A2", darkColor: "#A92D36", facets: [{ key: "wth", name: "Withdrawal" }, { key: "vol", name: "Volatility" }] }
     ];
 
     const setup = document.getElementById("setup");
@@ -333,7 +333,7 @@
       quizError.textContent = "";
       answersContainer.replaceChildren();
 
-      for (let value = 0; value <= 5; value++) {
+      for (let value = 1; value <= 5; value++) {
         const button = document.createElement("button");
         button.type = "button";
         button.className = "answer";
@@ -414,10 +414,21 @@
       return values.length ? values.reduce((total, value) => total + value, 0) / values.length : 0;
     }
 
-    // Round UP (not to nearest) to two decimal places, matching the Python version.
-    // Tiny epsilon prevents floating-point noise from turning 3.33 into 3.34.
+    // Map an average on the 1–5 response scale linearly onto a 1–10 score.
+    // Average 1 becomes 1/10; average 5 becomes 10/10.
+    function scaleToTen(value) {
+      return 1 + ((value - 1) / 4) * 9;
+    }
+
+    // Round UP to two decimal places, while avoiding floating-point noise.
     function ceilTwoDecimals(value) {
       return Math.ceil((value - 1e-10) * 100) / 100;
+    }
+
+    // Display up to two decimal places, removing unnecessary trailing zeroes.
+    // Examples: 5.00 -> 5, 5.60 -> 5.6, 3.34 -> 3.34.
+    function formatScore(value) {
+      return Number(value.toFixed(2)).toString();
     }
 
     function calculateResults() {
@@ -428,7 +439,7 @@
         const answer = responses[question - 1];
         for (const [facet, key] of Object.entries(scoringKey)) {
           if (key.normal.includes(question)) facetScores[facet].push(answer);
-          else if (key.reverse.includes(question)) facetScores[facet].push(5 - answer);
+          else if (key.reverse.includes(question)) facetScores[facet].push(6 - answer);
         }
       }
 
@@ -440,12 +451,13 @@
       computedResults = { facetScores, traitScores };
     }
 
-    function makeBar(score, small = false) {
+    function makeBar(score, small = false, color = null) {
       const wrapper = document.createElement("div");
       wrapper.className = small ? "mini-bar" : "bar";
       const fill = document.createElement("div");
       fill.className = small ? "" : "bar-fill";
       fill.style.width = `${Math.max(0, Math.min(100, score * 10))}%`;
+      if (color) fill.style.background = color;
       wrapper.appendChild(fill);
       return wrapper;
     }
@@ -458,7 +470,7 @@
       traitGrid.replaceChildren();
 
       for (const trait of traitDefinitions) {
-        const score = ceilTwoDecimals(computedResults.traitScores[trait.key] * 2);
+        const score = ceilTwoDecimals(scaleToTen(computedResults.traitScores[trait.key]));
         const card = document.createElement("article");
         card.className = "panel trait-card";
 
@@ -469,19 +481,20 @@
         name.textContent = trait.name;
         const scoreEl = document.createElement("div");
         scoreEl.className = "trait-score";
-        scoreEl.append(`${score.toFixed(2)} `);
+        scoreEl.append(`${formatScore(score)} `);
         const outOf = document.createElement("small");
         outOf.textContent = "/ 10";
         scoreEl.appendChild(outOf);
         head.append(name, scoreEl);
         card.appendChild(head);
-        card.appendChild(makeBar(score));
+        card.appendChild(makeBar(score, false, trait.color));
 
         const facets = document.createElement("div");
         facets.className = "facets";
+        let facetIndex = 0;
         for (const facet of trait.facets) {
           const facetAvg = average(computedResults.facetScores[facet.key]);
-          const facetScore = ceilTwoDecimals(facetAvg * 2);
+          const facetScore = ceilTwoDecimals(scaleToTen(facetAvg));
           const facetBox = document.createElement("div");
           facetBox.className = "facet";
           const line = document.createElement("div");
@@ -491,10 +504,12 @@
           facetName.textContent = facet.name;
           const facetValue = document.createElement("span");
           facetValue.className = "facet-score";
-          facetValue.textContent = `${facetScore.toFixed(2)}/10`;
+          facetValue.textContent = `${formatScore(facetScore)}/10`;
           line.append(facetName, facetValue);
-          facetBox.append(line, makeBar(facetScore, true));
+          const facetColor = facetIndex === 0 ? trait.lightColor : trait.darkColor;
+          facetBox.append(line, makeBar(facetScore, true, facetColor));
           facets.appendChild(facetBox);
+          facetIndex++;
         }
         card.appendChild(facets);
         traitGrid.appendChild(card);
@@ -506,13 +521,13 @@
 
     document.getElementById("downloadButton").addEventListener("click", () => {
       if (!computedResults) return;
-      const rows = [["Trait", "Average (0-5)", "Score (0-10)"]];
+      const rows = [["Trait", "Average (1-5)", "Score (1-10)"]];
       for (const trait of traitDefinitions) {
         const avg = computedResults.traitScores[trait.key];
-        rows.push([trait.name, ceilTwoDecimals(avg).toFixed(2), ceilTwoDecimals(avg * 2).toFixed(2)]);
+        rows.push([trait.name, avg.toFixed(2), ceilTwoDecimals(scaleToTen(avg)).toFixed(2)]);
         for (const facet of trait.facets) {
           const facetAvg = average(computedResults.facetScores[facet.key]);
-          rows.push([`  ${facet.name}`, ceilTwoDecimals(facetAvg).toFixed(2), ceilTwoDecimals(facetAvg * 2).toFixed(2)]);
+          rows.push([`  ${facet.name}`, facetAvg.toFixed(2), ceilTwoDecimals(scaleToTen(facetAvg)).toFixed(2)]);
         }
       }
       const csv = rows.map(row => row.map(cell => `"${String(cell).replaceAll('"', '""')}"`).join(",")).join("\r\n");
